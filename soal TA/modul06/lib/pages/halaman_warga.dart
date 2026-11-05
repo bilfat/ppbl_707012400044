@@ -66,7 +66,7 @@ class HalamanWarga extends StatelessWidget {
               Expanded(
                 child: Text('Keranjang Pengajuan', style: theme.textTheme.titleLarge),
               ),
-              BlocSelector<PengajuanCubit, List<String>, int>(
+              BlocSelector<PengajuanCubit, List<String>, int>( //disini
                 selector: (daftar) => daftar.length,
                 builder: (context, total) => Chip(label: Text('$total layanan')),
               ),

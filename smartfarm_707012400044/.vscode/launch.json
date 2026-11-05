@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter Offline (Edge / Chrome / Mobile)",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--no-web-resources-cdn",
+        "--no-pub"
+      ]
+    }
+  ]
+}
