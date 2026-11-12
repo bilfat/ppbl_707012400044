@@ -125,7 +125,7 @@ class _DashboardContentState extends State<DashboardContent> {
   void _load() {
     _latestFuture = DatabaseHelper.instance.ambilPembacaanTerbaru();
   }
-
+  //pembacaan sensor
   String _status(PembacaanSensor sensor) {
     switch (sensor.jenisSensor) {
       case 'ketinggian_air':
@@ -337,6 +337,7 @@ class _DashboardContentState extends State<DashboardContent> {
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 13),
+          //stats
           FutureBuilder<List<PembacaanSensor>>(
             future: _latestFuture,
             builder: (context, snapshot) {
@@ -362,6 +363,7 @@ class _DashboardContentState extends State<DashboardContent> {
               final waspada = sensors.where((sensor) => _status(sensor) == 'WASPADA').length;
               final aman = sensors.where((sensor) => _status(sensor) == 'AMAN').length;
 
+              //card di bawah stats
               return Column(
                 children: [
                   Row(
@@ -430,6 +432,7 @@ class _SummaryBox extends StatelessWidget {
     );
   }
 }
+
 
 class _SensorOverviewCard extends StatelessWidget {
   final PembacaanSensor sensor;
