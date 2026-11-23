@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/produk.dart';
-
+ 
 class KeranjangCubit extends Cubit<List<ItemKeranjang>> {
   KeranjangCubit() : super([]);
-
+ 
   void tambah(Produk produk) {
     final daftar = List<ItemKeranjang>.from(state);
     final index = daftar.indexWhere((item) => item.produk.id == produk.id);
@@ -14,7 +14,7 @@ class KeranjangCubit extends Cubit<List<ItemKeranjang>> {
     }
     emit(daftar);
   }
-
+ 
   void kurangi(Produk produk) {
     final daftar = List<ItemKeranjang>.from(state);
     final index = daftar.indexWhere((item) => item.produk.id == produk.id);
@@ -26,8 +26,9 @@ class KeranjangCubit extends Cubit<List<ItemKeranjang>> {
     }
     emit(daftar);
   }
-
+ 
   void kosongkan() {
     emit([]);
   }
 }
+

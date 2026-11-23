@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/theme_cubit.dart';
@@ -7,11 +8,11 @@ class HalamanPengaturan extends StatefulWidget {
   const HalamanPengaturan({super.key});
 
   @override
-  State<HalamanPengaturan> createState() => _HalamanPengaturanState();
+  State<HalamanPengaturan> createState() =>
+      _HalamanPengaturanState();
 }
 
 class _HalamanPengaturanState extends State<HalamanPengaturan> {
-  bool temaGelap = false;
   final controllerNama = TextEditingController();
 
   @override
@@ -21,23 +22,31 @@ class _HalamanPengaturanState extends State<HalamanPengaturan> {
   }
 
   Future<void> _muatPengaturan() async {
-    final gelap = await PengaturanHelper.muatTemaGelap();
     final nama = await PengaturanHelper.muatNamaPelanggan();
+
+    if (!mounted) return;
+
     setState(() {
-      temaGelap = gelap;
       controllerNama.text = nama;
     });
   }
 
   Future<void> _resetPengaturan() async {
     await PengaturanHelper.resetSemua();
-    if (temaGelap) {
-      context.read<ThemeCubit>().toggle();
-    }
+
+    if (!mounted) return;
+
+    context.read<ThemeCubit>().resetTema();
+
     setState(() {
-      temaGelap = false;
       controllerNama.clear();
     });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Pengaturan berhasil direset'),
+      ),
+    );
   }
 
   @override
@@ -49,25 +58,33 @@ class _HalamanPengaturanState extends State<HalamanPengaturan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Pengaturan')),
+      appBar: AppBar(
+        title: const Text('Pengaturan'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const Text('Mode Gelap'),
-                const Spacer(),
-                Switch(
-                  value: temaGelap,
-                  onChanged: (nilai) async {
-                    setState(() => temaGelap = nilai);
-                    await PengaturanHelper.simpanTemaGelap(nilai);
-                    context.read<ThemeCubit>().toggle();
-                  },
-                ),
-              ],
+            BlocBuilder<ThemeCubit, ThemeMode>(
+              builder: (context, themeMode) {
+                final temaGelap = themeMode == ThemeMode.dark;
+
+                return Row(
+                  children: [
+                    const Text('Mode Gelap'),
+                    const Spacer(),
+                    Switch(
+                      value: temaGelap,
+                      onChanged: (nilai) async {
+                        await context
+                            .read<ThemeCubit>()
+                            .setTemaGelap(nilai);
+                      },
+                    ),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 16),
             TextField(
@@ -77,7 +94,8 @@ class _HalamanPengaturanState extends State<HalamanPengaturan> {
                 border: OutlineInputBorder(),
               ),
               onChanged: (nilai) async {
-                await PengaturanHelper.simpanNamaPelanggan(nilai);
+                await PengaturanHelper
+                    .simpanNamaPelanggan(nilai);
               },
             ),
             const SizedBox(height: 24),

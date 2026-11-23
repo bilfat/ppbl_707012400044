@@ -34,12 +34,10 @@ class _HalamanRiwayatState extends State<HalamanRiwayat> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           final daftar = snapshot.data ?? [];
           if (daftar.isEmpty) {
             return const Center(child: Text('Belum ada riwayat pesanan.'));
           }
-
           return ListView.builder(
             itemCount: daftar.length,
             itemBuilder: (context, index) {
@@ -65,7 +63,6 @@ class _HalamanRiwayatState extends State<HalamanRiwayat> {
                     final controller = TextEditingController(
                       text: pesanan.totalItem.toString(),
                     );
-
                     final jumlahBaru = await showDialog<int>(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -112,3 +109,4 @@ class _HalamanRiwayatState extends State<HalamanRiwayat> {
     );
   }
 }
+

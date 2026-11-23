@@ -2,7 +2,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PengaturanHelper {
   PengaturanHelper._();
-
   static const String kunciTemaGelap = 'tema_gelap';
   static const String kunciNamaPelanggan = 'nama_pelanggan';
 

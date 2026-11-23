@@ -3,7 +3,6 @@ import '../models/produk_favorit.dart';
 
 class HiveHelper {
   HiveHelper._();
-
   static const String namaBoxFavorit = 'favoritBox';
 
   static Future<void> init() async {
@@ -15,3 +14,4 @@ class HiveHelper {
   static Box<ProdukFavorit> get box =>
       Hive.box<ProdukFavorit>(namaBoxFavorit);
 }
+

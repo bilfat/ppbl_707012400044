@@ -11,8 +11,7 @@ class HalamanFavorit extends StatelessWidget {
     await favorit.save();
   }
 
-  Future<void> _tampilkanDialogUbah(
-      BuildContext context, ProdukFavorit favorit) async {
+  Future<void> _tampilkanDialogUbah(BuildContext context, ProdukFavorit favorit) async {
     final controller = TextEditingController(text: favorit.catatan);
     final catatanBaru = await showDialog<String>(
       context: context,
@@ -34,7 +33,6 @@ class HalamanFavorit extends StatelessWidget {
         ],
       ),
     );
-
     if (catatanBaru != null) {
       await ubahCatatan(favorit, catatanBaru);
     }
@@ -51,7 +49,6 @@ class HalamanFavorit extends StatelessWidget {
           if (daftarFavorit.isEmpty) {
             return const Center(child: Text('Belum ada produk favorit'));
           }
-
           return ListView.builder(
             itemCount: daftarFavorit.length,
             itemBuilder: (context, index) {
@@ -59,19 +56,13 @@ class HalamanFavorit extends StatelessWidget {
               return Dismissible(
                 key: ValueKey(favorit.idProduk),
                 direction: DismissDirection.endToStart,
-                onDismissed: (direction) async {
+                onDismissed: (_) async {
                   await favorit.delete();
                 },
-                background: Container(
-                  color: Colors.red,
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.only(right: 16),
-                  child: const Icon(Icons.delete, color: Colors.white),
-                ),
+                background: Container(color: Colors.red),
                 child: ListTile(
                   title: Text(favorit.nama),
-                  subtitle: Text(
-                      'Rp${favorit.harga} ${favorit.catatan.isNotEmpty ? "- ${favorit.catatan}" : ""}'),
+                  subtitle: Text('Rp${favorit.harga}  •  ${favorit.catatan}'),
                   trailing: IconButton(
                     icon: const Icon(Icons.edit),
                     onPressed: () => _tampilkanDialogUbah(context, favorit),

@@ -8,10 +8,20 @@ import 'pages/halaman_favorit.dart';
 import 'pages/halaman_pengaturan.dart';
 import 'theme/app_theme.dart';
 import 'helpers/hive_helper.dart';
+import 'package:flutter/foundation.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inisialisasi SQLite khusus Flutter Web.
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  }
+
   await HiveHelper.init();
+
   runApp(const KantinKampusApp());
 }
 
@@ -23,7 +33,9 @@ class KantinKampusApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => KeranjangCubit()),
-        BlocProvider(create: (_) => ThemeCubit()),
+        BlocProvider(
+            create: (_) => ThemeCubit()..muatTema(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {
@@ -64,14 +76,10 @@ class _KerangkaUtamaState extends State<KerangkaUtama> {
         selectedIndex: _indeks,
         onDestinationSelected: (i) => setState(() => _indeks = i),
         destinations: const [
-          NavigationDestination(
-              icon: Icon(Icons.storefront), label: 'Produk'),
-          NavigationDestination(
-              icon: Icon(Icons.shopping_cart), label: 'Keranjang'),
-          NavigationDestination(
-              icon: Icon(Icons.settings), label: 'Pengaturan'),
-          NavigationDestination(
-              icon: Icon(Icons.favorite), label: 'Favorit'),
+          NavigationDestination(icon: Icon(Icons.storefront), label: 'Produk'),
+          NavigationDestination(icon: Icon(Icons.shopping_cart), label: 'Keranjang'),
+          NavigationDestination(icon: Icon(Icons.settings), label: 'Pengaturan'),
+          NavigationDestination(icon: Icon(Icons.favorite), label: 'Favorit'),
         ],
       ),
     );

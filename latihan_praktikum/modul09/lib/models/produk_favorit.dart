@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-
 part 'produk_favorit.g.dart';
 
 @HiveType(typeId: 0)
@@ -14,7 +13,7 @@ class ProdukFavorit extends HiveObject {
   late int harga;
 
   @HiveField(3)
-  String catatan;
+  String catatan = '';
 
   ProdukFavorit({
     required this.idProduk,

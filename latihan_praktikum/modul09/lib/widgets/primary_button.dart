@@ -4,14 +4,14 @@ class PrimaryButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
   final IconData? icon;
-
+ 
   const PrimaryButton({
     super.key,
     required this.label,
     required this.onPressed,
     this.icon,
   });
-
+ 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
@@ -21,3 +21,4 @@ class PrimaryButton extends StatelessWidget {
     );
   }
 }
+

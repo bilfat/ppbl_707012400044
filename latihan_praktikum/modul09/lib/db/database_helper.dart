@@ -32,20 +32,17 @@ class DatabaseHelper {
     );
   }
 
-  // CREATE
   Future<int> tambahPesanan(Pesanan pesanan) async {
     final db = await database;
     return db.insert('pesanan', pesanan.toMap());
   }
 
-  // READ
   Future<List<Pesanan>> ambilSemuaPesanan() async {
     final db = await database;
     final hasil = await db.query('pesanan', orderBy: 'id DESC');
     return hasil.map((baris) => Pesanan.fromMap(baris)).toList();
   }
 
-  // UPDATE
   Future<int> ubahPesanan(Pesanan pesanan) async {
     final db = await database;
     return db.update(
@@ -56,13 +53,9 @@ class DatabaseHelper {
     );
   }
 
-  // DELETE
   Future<int> hapusPesanan(int id) async {
     final db = await database;
-    return db.delete(
-      'pesanan',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return db.delete('pesanan', where: 'id = ?', whereArgs: [id]);
   }
 }
+

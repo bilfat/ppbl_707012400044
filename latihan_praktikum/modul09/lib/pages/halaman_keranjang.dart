@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../cubit/keranjang_cubit.dart';
 import '../models/produk.dart';
 import '../models/pesanan.dart';
@@ -18,7 +19,6 @@ class HalamanKeranjang extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.receipt_long),
-            tooltip: 'Riwayat Pesanan',
             onPressed: () {
               Navigator.push(
                 context,
@@ -28,11 +28,11 @@ class HalamanKeranjang extends StatelessWidget {
           ),
         ],
       ),
+
       body: BlocBuilder<KeranjangCubit, List<ItemKeranjang>>(
         builder: (context, daftarItem) {
           final totalItem = daftarItem.fold(0, (a, b) => a + b.jumlah);
           final totalHarga = daftarItem.fold(0, (a, b) => a + b.subtotal);
-
           return Column(
             children: [
               Expanded(
@@ -55,23 +55,55 @@ class HalamanKeranjang extends StatelessWidget {
                 onCheckout: () async {
                   if (daftarItem.isEmpty) return;
 
-                  final ringkasan =
-                      daftarItem.map((item) => item.produk.nama).join(', ');
+                  // Simpan referensi sebelum proses async.
+                  final keranjangCubit = context.read<KeranjangCubit>();
+                  final messenger = ScaffoldMessenger.of(context);
 
-                  await DatabaseHelper.instance.tambahPesanan(
-                    Pesanan(
-                      ringkasanItem: ringkasan,
-                      totalItem: totalItem,
-                      totalHarga: totalHarga,
-                      tanggal: DateTime.now().toString(),
-                    ),
-                  );
+                  final ringkasan = daftarItem
+                      .map((item) => '${item.produk.nama} (${item.jumlah})')
+                      .join(', ');
 
-                  if (context.mounted) {
-                    context.read<KeranjangCubit>().kosongkan();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Pesanan berhasil disimpan.')),
+                  try {
+                    final idPesanan = await DatabaseHelper.instance.tambahPesanan(
+                      Pesanan(
+                        ringkasanItem: ringkasan,
+                        totalItem: totalItem,
+                        totalHarga: totalHarga,
+                        tanggal: DateTime.now().toString(),
+                      ),
                     );
+
+                    if (!context.mounted) return;
+
+                    if (idPesanan > 0) {
+                      // Kosongkan keranjang hanya setelah pesanan tersimpan.
+                      keranjangCubit.kosongkan();
+
+                      messenger.showSnackBar(
+                        const SnackBar(
+                          content: Text('Checkout berhasil! Pesanan masuk ke riwayat.'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      messenger.showSnackBar(
+                        const SnackBar(
+                          content: Text('Pesanan gagal disimpan.'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (!context.mounted) return;
+
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text('Checkout gagal: $e'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+
+                    debugPrint('ERROR CHECKOUT: $e');
                   }
                 },
               ),

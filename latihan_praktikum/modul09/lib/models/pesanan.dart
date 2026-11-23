@@ -4,7 +4,7 @@ class Pesanan {
   final int totalItem;
   final int totalHarga;
   final String tanggal;
-
+ 
   Pesanan({
     this.id,
     required this.ringkasanItem,
@@ -12,7 +12,7 @@ class Pesanan {
     required this.totalHarga,
     required this.tanggal,
   });
-
+ 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -22,7 +22,7 @@ class Pesanan {
       'tanggal': tanggal,
     };
   }
-
+ 
   factory Pesanan.fromMap(Map<String, dynamic> map) {
     return Pesanan(
       id: map['id'] as int?,
@@ -33,3 +33,4 @@ class Pesanan {
     );
   }
 }
+
